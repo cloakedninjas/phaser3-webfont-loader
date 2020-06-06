@@ -1,0 +1,22 @@
+{
+  "name": "phaser3-webfont-loader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/webfont-loader.js",
+  "scripts": {
+    "build": "tsc",
+    "build:example": "tsc --project tsconfig-example.json",
+    "lint": "eslint . --ext .js --ext .ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/css-font-loading-module": "0.0.4",
+    "@typescript-eslint/eslint-plugin": "^3.1.0",
+    "@typescript-eslint/parser": "^3.1.0",
+    "eslint": "^7.2.0",
+    "phaser": "^3.23.0",
+    "typescript": "^3.9.5"
+  }
+}

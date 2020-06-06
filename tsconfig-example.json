@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "outDir": "example"
+  },
+  "files": [
+    "./node_modules/phaser/types/phaser.d.ts"
+  ],
+  "include": [
+    "src/*.ts"
+  ]
+}
