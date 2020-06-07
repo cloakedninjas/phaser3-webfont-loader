@@ -1,15 +1,16 @@
 {
   "name": "phaser3-webfont-loader",
   "version": "1.0.0",
-  "description": "",
+  "description": "A webfont loader for Phaser 3 that uses CSS @font-face to download the font and FontFaceSet to detect the load.",
   "main": "dist/webfont-loader.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run lint && npm run build:dist && npm run build:example",
+    "build:dist": "tsc",
     "build:example": "tsc --project tsconfig-example.json",
     "lint": "eslint . --ext .js --ext .ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "cloakedninjas",
   "license": "ISC",
   "devDependencies": {
     "@types/css-font-loading-module": "0.0.4",

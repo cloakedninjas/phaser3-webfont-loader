@@ -1,50 +1,96 @@
 const IsPlainObject = Phaser.Utils.Objects.IsPlainObject;
 
-export class WebfontLoader extends Phaser.Loader.File {
-  public type = 'webfont';
+export class WebfontLoader {
+  type = 'webfont';
+  key: string;
+  state: number;
+  loader: Phaser.Loader.LoaderPlugin;
+  config: WebfontFontConfig;
+  loaderOptions: WebfontLoaderConfig;
 
-  public load(): this {
-    if (this.state === Phaser.Loader.FILE_POPULATED) {
-      this.loader.nextFile(this, true);
-      return;
-    }
+  constructor(loader: Phaser.Loader.LoaderPlugin, fontConfig: WebfontFontConfig, loaderOptions: WebfontLoaderConfig) {
+    this.loader = loader;
+    this.config = fontConfig;
+    this.key = fontConfig.font;
+    this.loaderOptions = loaderOptions;
+    this.state = Phaser.Loader.FILE_POPULATED;
+  }
 
-    const link = `<link href="${this.url}" rel="stylesheet">`;
-    const testString = this.config.testString || 'hello there';
+  load(): this {
+    const link = document.createElement('link');
+    link.href = this.config.url;
+    link.rel = 'stylesheet';
+    link.onload = () => this.checkLoadStatus();
 
-    document.head.insertAdjacentHTML('beforeend', link);
-
-    if (document.fonts) {
-      document.fonts.load(`12px '${this.key}'`, testString).then(() => {
-        this.loader.nextFile(this, true);
-      });
-    } else {
-      setTimeout(() => {
-        this.loader.nextFile(this, false);
-      }, this.config.legacyTimeout || 50);
-    }
+    document.head.appendChild(link);
 
     return this;
   }
+
+  private checkLoadStatus(): void {
+    Promise.all(
+      this.config.variants.map((variant: string) => {
+        if (document.fonts) {
+          return this.loadFontWithFontFace(variant);
+        } else {
+          return this.loadFontLegacy(variant);
+        }
+      })
+    ).then(() => {
+      this.loader.nextFile((this as unknown as Phaser.Loader.File), true);
+    });
+  }
+
+  private loadFontWithFontFace(variant: string): Promise<void> {
+    return document.fonts.load(`${variant} 12px '${this.config.font}'`, this.loaderOptions?.testString) as unknown as Promise<void>;
+  }
+
+  private loadFontLegacy(variant: string): Promise<void> {
+    return new Promise((resolve) => {
+      const el = document.createElement('span');
+      el.style.visibility = 'hidden';
+      el.style.position = 'absolute';
+      el.style.font = variant + ' 12px ' + this.config.font;
+      el.innerText = 'abc';
+      document.body.appendChild(el);
+
+      setTimeout(() => {
+        document.body.removeChild(el);
+        resolve();
+      }, this.loaderOptions?.legacyTimeout || 50);
+    });
+  }
+
+  hasCacheConflict(): boolean {
+    return false;
+  }
+
+  addToCache(): void {
+    // no-op - called by Phaser.LoaderPlugin
+  }
+
+  onProcess(): void {
+    this.state = Phaser.Loader.FILE_COMPLETE;
+
+    this.loader.fileProcessComplete((this as unknown as Phaser.Loader.File));
+  }
 }
 
-const loaderCallback = function (key, url, testString) {
-  let config;
-
-  if (IsPlainObject(key)) {
-    config = key;
+const loaderCallback = function (font, url, options) {
+  if (IsPlainObject(font)) {
+    font.url = url;
   } else {
-    config = {
-      url,
-      key,
-      config: {
-        testString
-      }
+    font = {
+      font,
+      url
     };
   }
 
-  config.type = 'webfont';
-  this.addFile(new WebfontLoader(this, config));
+  if (!font.variants) {
+    font.variants = ['normal'];
+  }
+
+  this.addFile(new WebfontLoader(this, font, options));
 
   return this;
 }
@@ -55,15 +101,16 @@ export class WebFontLoaderPlugin extends Phaser.Plugins.BasePlugin {
 
     pluginManager.registerFileType('webfont', loaderCallback);
 
-    if (document.fonts) {
+    if (!document.fonts) {
       console.warn('Browser does not support FontFaceSet');
     }
   }
 }
 
 type WebfontFontConfig = {
-  key: string;
-  url: string;
+  font: string;
+  url?: string;
+  variants?: string[];
 };
 
 type WebfontLoaderConfig = {
@@ -74,7 +121,7 @@ type WebfontLoaderConfig = {
 declare module 'phaser' {
   namespace Loader {
     interface LoaderPlugin {
-      webfont(key: string | WebfontFontConfig | WebfontFontConfig[], url?: string | string[], loaderSettings?: WebfontLoaderConfig): this;
+      webfont(font: WebfontFontConfig | string, url?: string, options?: WebfontLoaderConfig): this;
     }
   }
 }

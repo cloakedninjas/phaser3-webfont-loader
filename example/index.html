@@ -20,7 +20,8 @@
 
 <body>
   <div id="phaser-example"></div>
-  <p style="font-family: 'Metal Mania';">Hello</p>
+  <canvas width="300" height="100"></canvas>
+
   <script type="module">
     import { WebFontLoaderPlugin } from './webfont-loader.js';
 
@@ -45,25 +46,45 @@
     var game = new Phaser.Game(config);
 
     function preload() {
-      this.load.webfont('Metal Mania', 'https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
+      this.load.webfont({
+        font: 'Roboto',
+        variants: [
+          'normal',
+          '100',
+          '700',
+          '700 italic'
+        ]
+      }, 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,500;1,400;1,700&display=swap');
     }
 
     function create() {
-      const text = this.add.text(400, 300, 'Hello there', {
-        fontFamily: '"Metal Mania"',
+      this.add.text(200, 100, 'I am Thin', {
+        fontFamily: 'Roboto, sans-serif',
+        fontSize: '32px',
+        fontStyle: '100',
+        color: 'white'
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(600, 100, 'I am Regular', {
+        fontFamily: 'Roboto',
         fontSize: '32px',
         color: 'white'
       }).setOrigin(0.5, 0.5);
 
-      this.tweens.add({
-        targets: text,
-        angle: 360,
-        duration: 3000,
-        repeat: -1
-      });
+      this.add.text(200, 400, 'I am Bold', {
+        fontFamily: 'Roboto',
+        fontSize: '32px',
+        fontStyle: '700',
+        color: 'white'
+      }).setOrigin(0.5, 0.5);
+
+      this.add.text(600, 400, 'I am Bold Italic', {
+        fontFamily: 'Roboto',
+        fontSize: '32px',
+        fontStyle: '700 italic',
+        color: 'white'
+      }).setOrigin(0.5, 0.5);
     }
-
-
   </script>
 </body>
 

@@ -51,13 +51,38 @@ function preload() {
 ```js
 function create() {
   this.add.text(400, 300, 'Hello there', {
-    fontFamily: '"Open Sans"',
+    fontFamily: 'Open Sans',
     fontSize: '12px'
   });
 }
 ```
 
 See [a working example](/example/index.html)
+
+## Fonts with multiple variants
+
+```js
+function preload() {
+  this.load.webfont({
+      font: 'Roboto',
+      variants: [
+        'normal',
+        '100',
+        '700',
+        '700 italic'
+      ]
+    }, 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,500;1,400;1,700&display=swap');
+}
+
+function create() {
+  this.add.text(400, 300, 'Hello there', {
+    fontFamily: 'Roboto',
+    fontSize: '12px',
+    fontStyle: '700 italic'
+  });
+}
+```
+
 
 ## Loader Config
 
