@@ -1,6 +1,8 @@
 # Phaser 3 Webfont Loader
 
-A webfont loader for Phaser 3 that uses CSS `@font-face` to download the font and `FontFaceSet` to detect the load.
+A webfont loader for Phaser 3 that uses CSS `@font-face` to download the font and `FontFaceSet` to trigger / detect the load.
+
+If the browser does not support `FontFaceSet` (see [compatability table](https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/load#Browser_compatibility)) the loader will attempt to inject an invisible HTML element into the page to trigger the browser to download the font file. A delay of 50ms is waited for before loading completes and the element removed. This delay is configurable in [Loader Config](#loader-config)
 
 ## Installation
 
@@ -20,22 +22,22 @@ import { WebFontLoaderPlugin } from 'phaser3-webfont-loader';
 
 ```js
 new Phaser.Game({
-      type: Phaser.AUTO,
-      parent: 'phaser-example',
-      width: 800,
-      height: 600,
-      scene: {
-        preload: preload,
-        create: create
-      },
-      plugins: {
-        global: [{
-          key: 'WebFontLoader',
-          plugin: WebFontLoaderPlugin,
-          start: true
-        }]
-      }
-    });
+  type: Phaser.AUTO,
+  parent: 'phaser-example',
+  width: 800,
+  height: 600,
+  scene: {
+    preload: preload,
+    create: create
+  },
+  plugins: {
+    global: [{
+      key: 'WebFontLoader',
+      plugin: WebFontLoaderPlugin,
+      start: true
+    }]
+  }
+});
 ```
 
 ### Load a font
@@ -64,14 +66,14 @@ See [a working example](/example/index.html)
 ```js
 function preload() {
   this.load.webfont({
-      font: 'Roboto',
-      variants: [
-        'normal',
-        '100',
-        '700',
-        '700 italic'
-      ]
-    }, 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,500;1,400;1,700&display=swap');
+    font: 'Roboto',
+    variants: [
+      'normal',
+      '100',
+      '700',
+      '700 italic'
+    ]
+  }, 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,500;1,400;1,700&display=swap');
 }
 
 function create() {
@@ -90,7 +92,7 @@ function create() {
 | config | description | default |
 |--|--|--|
 | testString | 2nd argument for `FontFaceSet.load()`| "" |
-| legacyTimeout | Not all browsers support `FontFaceSet` - this is time (in ms) to wait before sending success callback to Phaser Loader| 50 |
+| legacyTimeout | Time (in ms) to wait before sending success callback to Phaser Loader| 50 |
 
 
 ```js
