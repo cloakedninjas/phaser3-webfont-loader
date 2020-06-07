@@ -1,5 +1,5 @@
 module.exports = {
-  'env': {
+  env: {
     'browser': true,
     'node': true,
     'es6': true
@@ -7,11 +7,11 @@ module.exports = {
   extends: [
     'eslint:recommended'
   ],
-  'parserOptions': {
+  parserOptions: {
     'ecmaVersion': 2018,
     'sourceType': 'module'
   },
-  'ignorePatterns': ['dist'],
+  ignorePatterns: ['dist', 'example'],
   rules: {
     'object-curly-spacing': ['error', 'always'],
     'comma-dangle': ['error', 'never'],
@@ -25,6 +25,9 @@ module.exports = {
       'plugin:@typescript-eslint/recommended'
     ],
     parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint']
+    plugins: ['@typescript-eslint'],
+    rules: {
+      '@typescript-eslint/no-namespace': 0
+    }
   }]
 };

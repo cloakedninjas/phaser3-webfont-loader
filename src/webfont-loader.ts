@@ -3,7 +3,7 @@ const IsPlainObject = Phaser.Utils.Objects.IsPlainObject;
 export class WebfontLoader extends Phaser.Loader.File {
   public type = 'webfont';
 
-  public load(): void {
+  public load(): this {
     if (this.state === Phaser.Loader.FILE_POPULATED) {
       this.loader.nextFile(this, true);
       return;
@@ -23,6 +23,8 @@ export class WebfontLoader extends Phaser.Loader.File {
         this.loader.nextFile(this, false);
       }, this.config.legacyTimeout || 50);
     }
+
+    return this;
   }
 }
 
@@ -55,6 +57,24 @@ export class WebFontLoaderPlugin extends Phaser.Plugins.BasePlugin {
 
     if (document.fonts) {
       console.warn('Browser does not support FontFaceSet');
+    }
+  }
+}
+
+type WebfontFontConfig = {
+  key: string;
+  url: string;
+};
+
+type WebfontLoaderConfig = {
+  testString: string;
+  legacyTimeout: number;
+};
+
+declare module 'phaser' {
+  namespace Loader {
+    interface LoaderPlugin {
+      webfont(key: string | WebfontFontConfig | WebfontFontConfig[], url?: string | string[], loaderSettings?: WebfontLoaderConfig): this;
     }
   }
 }
