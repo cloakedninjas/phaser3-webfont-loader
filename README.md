@@ -59,7 +59,7 @@ function create() {
 }
 ```
 
-See [a working example](/example/index.html)
+See [a working example](https://cloakedninjas.github.io/phaser3-webfont-loader)
 
 ## Fonts with multiple variants
 
